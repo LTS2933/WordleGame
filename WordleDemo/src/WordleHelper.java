@@ -22,7 +22,7 @@ public class WordleHelper {
      * @param fileName name of file that contains 300 random 5-letter words as potential answers.
      * @return String answer - the random word that will be used in the current Wordle game as the answer
      */
-    public static String generateAnswer(String fileName) {
+    public static String[] randomWordsToArray(String fileName) {
         List<String> randomWords = null;
         try {
             randomWords = Files.readAllLines(Paths.get(fileName));
@@ -30,8 +30,20 @@ public class WordleHelper {
             e.printStackTrace();
         }
         String[] randomWordsArray = randomWords.toArray(new String[0]);
+        return randomWordsArray;
+    }
+    public static String generateAnswer(String [] randomWordsArray){
         String answer = randomWordsArray[new Random().nextInt(randomWordsArray.length)].toUpperCase();
         return answer;
+    }
+
+    public static boolean isValidWord(String word, String[] randomWordsArray){
+        for (int i = 0; i < randomWordsArray.length; i++){
+            if (word.equals(randomWordsArray[i].toUpperCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -57,19 +69,20 @@ public class WordleHelper {
      */
     public static void gamePlay(){
         boolean correctAnswer = false;
-        String answer = generateAnswer("C:\\Users\\Liam\\CS213\\WordleDemo\\src\\randomWords.txt");
+        String [] randomWordsArray = randomWordsToArray("C:\\Users\\Liam\\CS213\\WordleDemo\\src\\randomWords.txt");
+        String answer = generateAnswer(randomWordsArray);
         Scanner scanner = new Scanner(System.in);
         for (int i = 0; i < 6; i++) {
             System.out.println("Guess " +Integer.toString(i+1) + " of 6");
             System.out.println("Enter your 5-letter guess: ");
             String guess = scanner.nextLine().toUpperCase();
-            while (guess == null || !guess.matches("[a-zA-Z]+")) {
-                System.out.println("Your guess must be a valid word!");
-                System.out.println("Enter your 5-letter guess: ");
-                guess = scanner.nextLine().toUpperCase();
-            }
-            while (guess.length() != 5) {
-                System.out.println("Your guess must be 5 letters!");
+            while (guess == null || !guess.matches("[a-zA-Z]+") || guess.length() != 5 || !isValidWord(guess,randomWordsArray)) {
+                if (guess.length() != 5){
+                    System.out.println("Your guess must be 5 letters!");
+                }
+                else {
+                    System.out.println("Your guess must be a valid word!");
+                }
                 System.out.println("Enter your 5-letter guess: ");
                 guess = scanner.nextLine().toUpperCase();
             }
@@ -102,5 +115,14 @@ public class WordleHelper {
         if (!correctAnswer) {
             System.out.println("Sorry, you did not answer correctly.\nThe correct answer was " + answer);
         }
+        System.out.println("Would you like to play again? Enter 'Y' or 'Yes': ");
+        String response = scanner.nextLine();
+         if (response.toUpperCase().equals("Y") || response.toUpperCase().equals("YES")){
+             gamePlay();
+         }
+         else {
+             System.out.println("You entered '" +response+ "' thanks for playing!");
+         }
     }
+
 }

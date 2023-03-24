@@ -18,9 +18,9 @@ public class WordleHelper {
     public static final String ANSI_DEFAULT = "\u001B[0m";
 
     /**
-    * Generates a random word from a file to be used as the answer to the Wordle game.
-     * @param fileName name of file that contains 300 random 5-letter words as potential answers.
-     * @return String answer - the random word that will be used in the current Wordle game as the answer
+    * Parses random 5-letter words from a file to an array of Strings.
+     * @param fileName name of file that contains 5757 random 5-letter words as potential answers.
+     * @return String [] randomWordsArray - array of 5-letter words
      */
     public static String[] randomWordsToArray(String fileName) {
         List<String> randomWords = null;
@@ -32,10 +32,21 @@ public class WordleHelper {
         String[] randomWordsArray = randomWords.toArray(new String[0]);
         return randomWordsArray;
     }
+    /**
+     * Generates a random word from a file to be used as the answer to the Wordle game.
+     * @param randomWordsArray array of words from which a random word will be generated.
+     * @return String answer - the random word that will be used in the current Wordle game as the answer
+     */
     public static String generateAnswer(String [] randomWordsArray){
         String answer = randomWordsArray[new Random().nextInt(randomWordsArray.length)].toUpperCase();
         return answer;
     }
+    /**
+     * Checks if a String is contained within a String array of words
+     * @param word the String that will be compared against different Strings in the array
+     * @param randomWordsArray the array of Strings that will be traversed to check for a given String
+     * @return true if the String word equals one of the Strings in the array, false otherwise
+     */
 
     public static boolean isValidWord(String word, String[] randomWordsArray){
         for (int i = 0; i < randomWordsArray.length; i++){
